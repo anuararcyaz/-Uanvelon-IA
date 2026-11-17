@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Uanvelon IA</title>
+  <desc id="desc">Logo de asistente inteligente Uanvelon IA</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#1d5ee6"/>
+      <stop offset="100%" stop-color="#123a9d"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#f4f7ff"/>
+      <stop offset="100%" stop-color="#e6ecff"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="18" y="18" width="476" height="476" rx="120" fill="url(#bg)"/>
+
+  <g transform="translate(72 80)">
+    <rect x="28" y="32" width="332" height="284" rx="84" fill="url(#panel)"/>
+
+    <path d="M90 118c0-42 33-75 75-75h38c42 0 75 33 75 75v10H90v-10Z" fill="#ffffff" opacity="0.72"/>
+    <path d="M98 128c0-30 24-54 54-54h68c30 0 54 24 54 54v8H98v-8Z" fill="#dfe8ff" opacity="0.75"/>
+
+    <path d="M138 196h92" stroke="#0d2d7c" stroke-width="18" stroke-linecap="round" opacity="0.9"/>
+    <path d="M85 162c-18 0-32 14-32 32v14h84v-14c0-18-14-32-32-32h-20Z" fill="#dfe8ff" opacity="0.9"/>
+    <path d="M240 162c-18 0-32 14-32 32v14h84v-14c0-18-14-32-32-32h-20Z" fill="#dfe8ff" opacity="0.9"/>
+
+    <circle cx="158" cy="118" r="16" fill="#0e2d82"/>
+    <circle cx="220" cy="118" r="16" fill="#0e2d82"/>
+
+    <rect x="88" y="204" width="196" height="34" rx="12" fill="#0d2d7c"/>
+    <path d="M102 221h168" stroke="#f1f5ff" stroke-width="8" stroke-linecap="round" opacity="0.9"/>
+
+    <path d="M100 274c0 26 22 48 48 48h82c26 0 48-22 48-48v-16H100v16Z" fill="#ffffff" opacity="0.7"/>
+
+    <path d="M94 286c0-38 30-68 68-68h48c38 0 68 30 68 68v10H94v-10Z" fill="#f4f7ff"/>
+    <path d="M118 286h120" stroke="#0d2d7c" stroke-width="18" stroke-linecap="round" opacity="0.9"/>
+    <path d="M132 246v46M178 246v46M224 246v46" stroke="#0d2d7c" stroke-width="18" stroke-linecap="round" opacity="0.92"/>
+
+    <circle cx="126" cy="84" r="12" fill="#0d2d7c" opacity="0.75"/>
+    <circle cx="252" cy="84" r="12" fill="#0d2d7c" opacity="0.75"/>
+  </g>
+</svg>

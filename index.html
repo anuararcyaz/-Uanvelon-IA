@@ -1,0 +1,800 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f7fb">
+  <title>Uanvelon IA | Asistente inteligente</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #17233c;
+      --muted: #71809a;
+      --line: #e7ebf3;
+      --paper: #fff;
+      --canvas: #f3f6fb;
+      --blue: #2159e6;
+      --blue-dark: #173fb2;
+      --blue-soft: #edf3ff;
+      --mint: #ecf9f3;
+      --green: #1d8f68;
+      --shadow: 0 18px 40px rgba(20, 35, 70, 0.08);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      background: linear-gradient(180deg, #f5f8fd 0%, #eef3f9 100%);
+      color: var(--ink);
+    }
+
+    body::after {
+      position: fixed;
+      right: 28px;
+      bottom: 20px;
+      z-index: 0;
+      width: 190px;
+      aspect-ratio: 1;
+      background: url("/logo-unach.png") center / contain no-repeat;
+      content: "";
+      opacity: .055;
+      pointer-events: none;
+    }
+
+    button, textarea { font: inherit; }
+    button { cursor: pointer; }
+
+    .topbar {
+      position: relative;
+      z-index: 1;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 6.5%;
+      background: rgba(255, 255, 255, 0.82);
+      border-bottom: 1px solid rgba(17, 27, 52, 0.06);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 8px 18px rgba(16, 24, 40, 0.02);
+    }
+
+    .brand { display: flex; align-items: center; gap: 12px; }
+
+    .brand-mark {
+      width: 52px;
+      height: 52px;
+      flex: 0 0 auto;
+      padding: 5px;
+      border: 1px solid rgba(17, 27, 52, 0.08);
+      border-radius: 14px;
+      background: linear-gradient(135deg, #ffffff 0%, #eef4ff 100%);
+      box-shadow: 0 10px 20px rgba(29, 61, 138, 0.08);
+    }
+
+    .brand-mark img { width: 100%; height: 100%; object-fit: contain; }
+    .brand-name {
+      font-size: 15px;
+      font-weight: 760;
+      letter-spacing: -.03em;
+      color: #1c2a42;
+    }
+    .brand-caption {
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: .02em;
+    }
+
+    .topbar-right { display: flex; align-items: center; gap: 18px; }
+
+    .welcome-label {
+      max-width: 220px;
+      overflow: hidden;
+      color: #53627b;
+      font-size: 12px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .logout-button {
+      padding: 8px 11px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: #53627b;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .logout-button:hover { border-color: #cbd5e5; color: var(--ink); }
+
+    .local-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #53627b;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .local-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #27a77b;
+      box-shadow: 0 0 0 4px #e6f6ef;
+    }
+
+    main {
+      position: relative;
+      z-index: 1;
+      width: min(1120px, 88%);
+      margin: 0 auto;
+      padding: 52px 0 32px;
+    }
+
+    .intro { margin-bottom: 27px; }
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 750;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(29px, 4vw, 40px);
+      font-weight: 680;
+      letter-spacing: -.045em;
+    }
+
+    .intro-copy {
+      max-width: 650px;
+      margin: 11px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 260px;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .chat-card, .info-card {
+      overflow: hidden;
+      border: 1px solid rgba(19, 29, 52, 0.08);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: var(--shadow);
+    }
+
+    .chat-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 18px 22px;
+      border-bottom: 1px solid rgba(17, 27, 52, 0.06);
+      background: linear-gradient(180deg, rgba(244, 247, 255, 0.9) 0%, rgba(255,255,255,0.7) 100%);
+    }
+
+    .assistant-icon {
+      width: 42px;
+      height: 42px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      padding: 4px;
+      border: 0;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--blue) 0%, #4e7ef5 100%);
+      box-shadow: 0 12px 24px rgba(33, 89, 230, 0.2);
+    }
+
+    .assistant-icon img { width: 100%; height: 100%; object-fit: contain; }
+    .assistant-name { font-size: 13px; font-weight: 700; color: #1d2e4e; }
+    .assistant-state { margin-top: 4px; color: var(--green); font-size: 11px; font-weight: 600; }
+
+    .chat-log {
+      height: min(52vh, 470px);
+      min-height: 335px;
+      overflow-y: auto;
+      padding: 24px;
+      background:
+        radial-gradient(ellipse at 2% 2%, rgb(49 94 232 / 3%), transparent 34%),
+        var(--paper);
+    }
+
+    .message {
+      display: flex;
+      gap: 10px;
+      margin: 0 0 18px;
+      align-items: flex-start;
+    }
+
+    .message.user { flex-direction: row-reverse; }
+
+    .avatar {
+      width: 29px;
+      height: 29px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: #f7f8fc;
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 750;
+    }
+
+    .user .avatar {
+      border-color: #dce5ff;
+      background: #edf2ff;
+      color: #3156c6;
+    }
+
+    .bubble {
+      max-width: min(82%, 620px);
+      padding: 12px 15px;
+      border: 1px solid rgba(17, 27, 52, 0.06);
+      border-radius: 18px 18px 18px 6px;
+      background: linear-gradient(180deg, #ffffff 0%, #f8faff 100%);
+      color: #34425b;
+      font-size: 13px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      box-shadow: 0 5px 18px rgba(17, 27, 52, 0.02);
+    }
+
+    .user .bubble {
+      border-color: rgba(59, 96, 228, 0.12);
+      border-radius: 18px 18px 6px 18px;
+      background: linear-gradient(135deg, #edf3ff 0%, #eaf3ff 100%);
+      color: #243b77;
+    }
+
+    .suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 3px 0 0 39px;
+    }
+
+    .suggestion {
+      padding: 8px 11px;
+      border: 1px solid #e4eaf5;
+      border-radius: 12px;
+      background: #fff;
+      color: #586780;
+      font-size: 11px;
+      transition: border-color .15s, color .15s, background .15s, transform .15s;
+    }
+
+    .suggestion:hover {
+      border-color: #b7c8ff;
+      background: #f7f9ff;
+      color: var(--blue);
+      transform: translateY(-1px);
+    }
+
+    .composer {
+      padding: 14px 18px 12px;
+      border-top: 1px solid rgba(17, 27, 52, 0.06);
+      background: #fff;
+    }
+
+    .input-wrap {
+      display: flex;
+      align-items: flex-end;
+      gap: 12px;
+      padding: 8px 9px 8px 13px;
+      border: 1px solid #dfe5ef;
+      border-radius: 14px;
+      background: #fbfcfe;
+      transition: border-color .15s, box-shadow .15s;
+    }
+
+    .input-wrap:focus-within {
+      border-color: #9db3ff;
+      box-shadow: 0 0 0 4px rgba(49, 94, 232, 0.08);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 40px;
+      max-height: 128px;
+      resize: vertical;
+      padding: 10px 0 4px;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--ink);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    textarea::placeholder { color: #98a3b5; }
+
+    .send-button {
+      width: 39px;
+      height: 39px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 10px;
+      background: var(--blue);
+      color: #fff;
+      transition: background .15s, opacity .15s;
+    }
+
+    .send-button:hover { background: var(--blue-dark); }
+    .send-button:disabled { cursor: wait; opacity: .58; }
+    .send-button svg { width: 17px; height: 17px; }
+
+    .voice-button {
+      width: 39px;
+      height: 39px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      border: 1px solid #dfe5ef;
+      border-radius: 10px;
+      background: #fff;
+      color: #64728a;
+      transition: background .15s, color .15s, border-color .15s, opacity .15s;
+    }
+
+    .voice-button:hover:not(:disabled) {
+      border-color: #b7c8ff;
+      background: #f7f9ff;
+      color: var(--blue);
+    }
+
+    .voice-button:disabled { cursor: not-allowed; opacity: .5; }
+    .voice-button.is-listening { border-color: #f0b5b5; background: #fff1f1; color: #b42318; }
+    .voice-button svg { width: 18px; height: 18px; }
+
+    .composer-note {
+      margin: 9px 2px 0;
+      color: #99a3b3;
+      font-size: 10px;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    .sidebar { display: grid; gap: 14px; }
+
+    .info-card { padding: 18px 18px 16px; }
+    .card-title {
+      margin: 0;
+      color: #2d3f5f;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .01em;
+    }
+
+    .provider-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 15px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .provider-value {
+      overflow: hidden;
+      color: #35435c;
+      font-size: 11px;
+      font-weight: 650;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .privacy-box {
+      margin-top: 14px;
+      padding: 12px 11px;
+      border-radius: 12px;
+      background: var(--mint);
+      color: #39735f;
+      font-size: 10px;
+      line-height: 1.6;
+      border: 1px solid rgba(26, 143, 105, 0.08);
+    }
+
+    .privacy-box.remote { background: #fff8ec; color: #8a6531; }
+    .tool-list { display: grid; gap: 12px; margin-top: 15px; }
+
+    .tool-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: #586780;
+      font-size: 11px;
+      padding: 2px 0;
+    }
+
+    .tool-icon {
+      width: 25px;
+      height: 25px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: #f2f4fa;
+      color: #647697;
+      font-size: 12px;
+      border: 1px solid rgba(17, 27, 52, 0.04);
+    }
+
+    .footer {
+      margin-top: 34px;
+      padding: 20px 0 0;
+      border-top: 1px solid rgba(17, 27, 52, 0.07);
+      text-align: center;
+    }
+
+    .footer-heading {
+      color: #52627c;
+      font-size: 10px;
+      font-weight: 750;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    .author-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin: 12px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .author-list li {
+      padding: 8px 12px;
+      border: 1px solid rgba(17, 27, 52, 0.07);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.8);
+      color: #71809a;
+      font-size: 11px;
+      box-shadow: 0 4px 12px rgba(20, 35, 70, 0.03);
+    }
+
+    @media (max-width: 760px) {
+      .topbar { height: 66px; padding: 0 6%; }
+      .brand-mark { width: 46px; height: 46px; }
+      main { width: 90%; padding-top: 34px; }
+      .workspace { grid-template-columns: 1fr; }
+      .sidebar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .chat-log { height: 48vh; min-height: 290px; }
+    }
+
+    @media (max-width: 500px) {
+      body::after { right: 10px; bottom: 10px; width: 130px; opacity: .04; }
+      .brand-caption { display: none; }
+      .local-label { font-size: 10px; }
+      .topbar-right { gap: 8px; }
+      .welcome-label { display: none; }
+      .logout-button { padding: 7px 8px; font-size: 10px; }
+      main { width: 92%; padding-top: 27px; }
+      .intro-copy { font-size: 13px; }
+      .chat-log { padding: 18px 13px; }
+      .chat-head { padding: 14px; }
+      .composer { padding: 12px; }
+      .sidebar { grid-template-columns: 1fr; }
+      .bubble { max-width: 88%; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">
+        <img src="/logo-uanvelon.svg" alt="Logotipo de Uanvelon IA">
+      </div>
+      <div>
+        <div class="brand-name">Uanvelon IA</div>
+        <div class="brand-caption">Asistente inteligente</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <span class="welcome-label" id="welcome-label" hidden></span>
+      <form id="logout-form" action="/auth/logout" method="post" hidden>
+        <button class="logout-button" type="submit">Cerrar sesión</button>
+      </form>
+      <div class="local-label"><span class="local-dot"></span><span id="local-label">Interfaz local activa</span></div>
+    </div>
+  </header>
+
+  <main>
+    <section class="intro">
+      <p class="eyebrow">Asistencia inteligente</p>
+      <h1>¿En qué puedo asistirle?</h1>
+      <p class="intro-copy">
+        Formule su consulta. El asistente puede responder directamente o utilizar herramientas
+        especializadas para ofrecerle información y resultados precisos.
+      </p>
+    </section>
+
+    <div class="workspace">
+      <section class="chat-card" aria-label="Conversación con el asistente">
+        <div class="chat-head">
+          <div class="assistant-icon" aria-hidden="true">
+            <img src="/logo-uanvelon.svg" alt="">
+          </div>
+          <div>
+            <div class="assistant-name">Uanvelon IA</div>
+            <div class="assistant-state" id="assistant-state">Preparado para atenderle</div>
+          </div>
+        </div>
+
+        <div class="chat-log" id="chat-log" aria-live="polite">
+          <div class="message">
+            <div class="avatar" aria-hidden="true">IA</div>
+            <div class="bubble">Buenos días. Estoy a su disposición para responder consultas, realizar cálculos o ayudarle a consultar las herramientas disponibles.</div>
+          </div>
+          <div class="suggestions" id="suggestions">
+            <button class="suggestion" type="button">¿Qué productos tienen poco inventario?</button>
+            <button class="suggestion" type="button">¿Cuánto es el 18 % de 1,245.50?</button>
+            <button class="suggestion" type="button">Explíqueme qué es una API</button>
+          </div>
+        </div>
+
+        <form class="composer" id="chat-form">
+          <div class="input-wrap">
+            <textarea id="message-input" rows="1" maxlength="4000" aria-label="Escriba su consulta"
+              placeholder="Escriba su consulta aquí..."></textarea>
+            <button class="voice-button" id="voice-button" type="button" aria-label="Dictar consulta"
+              title="Dictar consulta por micrófono">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <rect x="9" y="3" width="6" height="12" rx="3"/>
+                <path d="M5 11a7 7 0 0 0 14 0M12 18v3m-4 0h8"/>
+              </svg>
+            </button>
+            <button class="send-button" id="send-button" type="submit" aria-label="Enviar consulta">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m5 12 14-7-4.5 14-3-5-6.5-2Z"/><path d="m11.5 14 4.5-5"/>
+              </svg>
+            </button>
+          </div>
+          <p class="composer-note">
+            Enter para enviar · Shift + Enter para una nueva línea · Revise la transcripción antes de enviarla.
+            El navegador puede procesar el audio con su propio servicio de reconocimiento.
+          </p>
+        </form>
+      </section>
+
+      <aside class="sidebar" aria-label="Información del asistente">
+        <section class="info-card">
+          <h2 class="card-title">Configuración</h2>
+          <div class="provider-row"><span>Proveedor</span><span class="provider-value" id="provider-name">Consultando…</span></div>
+          <div class="provider-row"><span>Modelo</span><span class="provider-value" id="model-name">Consultando…</span></div>
+          <div class="privacy-box" id="privacy-note">La interfaz se ejecuta en su equipo.</div>
+        </section>
+
+        <section class="info-card">
+          <h2 class="card-title">Herramientas disponibles</h2>
+          <div class="tool-list" id="tool-list">
+            <div class="tool-item"><span class="tool-icon">⌁</span><span>Cargando herramientas…</span></div>
+          </div>
+        </section>
+      </aside>
+    </div>
+    <footer class="footer">
+      <div class="footer-heading">Hecho por</div>
+      <ul class="author-list">
+        <li>Anuar Arce Yáñez</li>
+        <li>Evelyn Jazmín Gómez Roblero</li>
+        <li>Uber Alexis Reyes Camacho</li>
+        <li>Alondra Guadalupe Sánchez Deara</li>
+      </ul>
+    </footer>
+  </main>
+
+  <script>
+    const form = document.getElementById("chat-form");
+    const input = document.getElementById("message-input");
+    const sendButton = document.getElementById("send-button");
+    const voiceButton = document.getElementById("voice-button");
+    const assistantState = document.getElementById("assistant-state");
+    const chatLog = document.getElementById("chat-log");
+    const suggestions = document.getElementById("suggestions");
+    const welcomeLabel = document.getElementById("welcome-label");
+    const logoutForm = document.getElementById("logout-form");
+    const friendlyTools = {
+      obtener_clima: "Consulta del clima",
+      calcular: "Cálculos matemáticos",
+      buscar_web: "Búsqueda en internet",
+      consultar_base_datos: "Consulta de inventario y ventas",
+      fecha_hora_actual: "Fecha y hora"
+    };
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (SpeechRecognition) {
+      const recognition = new SpeechRecognition();
+      recognition.lang = "es-MX";
+      recognition.continuous = false;
+      recognition.interimResults = false;
+
+      recognition.onstart = () => {
+        voiceButton.classList.add("is-listening");
+        assistantState.textContent = "Escuchando su consulta…";
+      };
+
+      recognition.onresult = (event) => {
+        const transcript = Array.from(event.results)
+          .map((result) => result[0].transcript)
+          .join(" ")
+          .trim();
+        if (!transcript) return;
+        input.value = `${input.value.trim()} ${transcript}`.trim();
+        input.focus();
+        assistantState.textContent = "Dictado listo. Revise el texto y presione Enviar.";
+      };
+
+      recognition.onerror = (event) => {
+        const messages = {
+          "not-allowed": "Permita el acceso al micrófono para usar el dictado.",
+          "audio-capture": "No se encontró un micrófono disponible.",
+          "no-speech": "No se detectó voz. Inténtelo nuevamente.",
+          network: "El servicio de reconocimiento de voz no está disponible."
+        };
+        assistantState.textContent = messages[event.error] || "No fue posible completar el dictado.";
+      };
+
+      recognition.onend = () => {
+        voiceButton.classList.remove("is-listening");
+        if (assistantState.textContent === "Escuchando su consulta…") {
+          assistantState.textContent = "Preparado para atenderle";
+        }
+      };
+
+      voiceButton.addEventListener("click", () => {
+        try {
+          recognition.start();
+        } catch (error) {
+          assistantState.textContent = `No se pudo iniciar el dictado: ${error.message}`;
+        }
+      });
+    } else {
+      voiceButton.disabled = true;
+      voiceButton.title = "El dictado por voz no está disponible en este navegador.";
+    }
+
+    function addMessage(text, role) {
+      const row = document.createElement("div");
+      row.className = `message ${role}`;
+      const avatar = document.createElement("div");
+      avatar.className = "avatar";
+      avatar.setAttribute("aria-hidden", "true");
+      avatar.textContent = role === "user" ? "U" : "IA";
+      const bubble = document.createElement("div");
+      bubble.className = "bubble";
+      bubble.textContent = text;
+      row.append(avatar, bubble);
+      chatLog.append(row);
+      chatLog.scrollTop = chatLog.scrollHeight;
+      return bubble;
+    }
+
+    async function loadStatus() {
+      const provider = document.getElementById("provider-name");
+      try {
+        const response = await fetch("/api/status");
+        if (!response.ok) throw new Error("No se pudo consultar la configuración.");
+        const status = await response.json();
+        provider.textContent = status.provider === "ollama" ? "Ollama · local" : "Anthropic · remoto";
+        document.getElementById("model-name").textContent = status.model;
+        const privacyNote = document.getElementById("privacy-note");
+        if (status.provider === "anthropic") {
+          privacyNote.textContent = "Las consultas se envían a Anthropic para generar las respuestas.";
+          privacyNote.classList.add("remote");
+          document.getElementById("local-label").textContent = logoutForm.hidden
+            ? "Interfaz local · proveedor remoto"
+            : "Acceso protegido · proveedor remoto";
+        } else {
+          privacyNote.textContent = "El modelo procesa sus mensajes en su equipo; clima y búsquedas consultan servicios externos.";
+        }
+        const toolList = document.getElementById("tool-list");
+        toolList.replaceChildren();
+        status.tools.forEach((name, index) => {
+          const item = document.createElement("div");
+          item.className = "tool-item";
+          const icon = document.createElement("span");
+          icon.className = "tool-icon";
+          icon.textContent = ["◷", "∑", "⌕", "▤", "◴"][index % 5];
+          const label = document.createElement("span");
+          label.textContent = friendlyTools[name] || name;
+          item.append(icon, label);
+          toolList.append(item);
+        });
+      } catch (error) {
+        provider.textContent = "No disponible";
+        document.getElementById("model-name").textContent = "Sin conexión";
+        document.getElementById("assistant-state").textContent = error.message;
+      }
+    }
+
+    async function loadSession() {
+      try {
+        const response = await fetch("/api/session");
+        if (response.status === 401) {
+          window.location.replace("/login");
+          return;
+        }
+        if (!response.ok) throw new Error("No se pudo consultar la sesión.");
+        const session = await response.json();
+        if (!session.local) {
+          welcomeLabel.textContent = `Bienvenido, ${session.name}`;
+          welcomeLabel.hidden = false;
+          logoutForm.hidden = false;
+          document.getElementById("local-label").textContent = "Acceso protegido";
+        }
+      } catch (error) {
+        document.getElementById("assistant-state").textContent = error.message;
+      }
+    }
+
+    async function sendMessage(text) {
+      const message = text.trim();
+      if (!message || sendButton.disabled) return;
+      suggestions.hidden = true;
+      addMessage(message, "user");
+      input.value = "";
+      sendButton.disabled = true;
+      document.getElementById("assistant-state").textContent = "Preparando una respuesta…";
+      const answer = addMessage("Estoy procesando su consulta…", "assistant");
+      try {
+        const response = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message })
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || "No fue posible obtener una respuesta.");
+        answer.textContent = result.answer || "No se recibió una respuesta del modelo.";
+        document.getElementById("assistant-state").textContent = "Preparado para atenderle";
+      } catch (error) {
+        answer.textContent = `No fue posible completar su consulta. ${error.message}`;
+        document.getElementById("assistant-state").textContent = "No se pudo completar la consulta";
+      } finally {
+        sendButton.disabled = false;
+        input.focus();
+        chatLog.scrollTop = chatLog.scrollHeight;
+      }
+    }
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      sendMessage(input.value);
+    });
+
+    input.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        form.requestSubmit();
+      }
+    });
+
+    suggestions.addEventListener("click", (event) => {
+      if (event.target.matches("button")) sendMessage(event.target.textContent);
+    });
+
+    loadSession().then(loadStatus);
+  </script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+requests
+ollama
+ddgs
+anthropic
+google-auth
+google-auth-oauthlib
+itsdangerous
+oauthlib

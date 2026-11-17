@@ -27,13 +27,14 @@ Un asistente en Python que **decide solo** qué herramienta usar y con qué par�
 1. Instala Ollama desde https://ollama.com
 2. Descarga un modelo con soporte de herramientas:
    ```bash
-   ollama pull llama3.1
+   ollama pull qwen2.5:7b
    ```
 3. Ejecuta:
    ```bash
    python agente.py
    ```
-   (Otros modelos válidos: `qwen2.5:7b`, `mistral-nemo`. Úsalos con `--modelo`.)
+   La aplicación prefiere `qwen2.5:7b` si está instalado; si no, usa otro modelo disponible.
+   También puede elegir uno explícitamente con `--modelo` (por ejemplo, `mistral-nemo`).
 
 ## Opción B – Claude (API de Anthropic)
 
